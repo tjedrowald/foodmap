@@ -1,4 +1,4 @@
-package edu.avans.tjedrowald.foodmap.connection;
+package edu.avans.tjedrowald.foodmap.sync.connection;
 
 import edu.avans.tjedrowald.foodmap.models.AutoComplete;
 import edu.avans.tjedrowald.foodmap.models.Business;

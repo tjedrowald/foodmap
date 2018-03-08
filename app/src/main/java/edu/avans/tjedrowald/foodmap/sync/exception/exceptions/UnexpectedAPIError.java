@@ -1,4 +1,4 @@
-package edu.avans.tjedrowald.foodmap.exception.exceptions;
+package edu.avans.tjedrowald.foodmap.sync.exception.exceptions;
 
 public class UnexpectedAPIError extends YelpFusionError {
     public UnexpectedAPIError(int responseCode, String message) {

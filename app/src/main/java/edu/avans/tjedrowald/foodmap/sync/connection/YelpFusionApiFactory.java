@@ -1,9 +1,9 @@
-package edu.avans.tjedrowald.foodmap.connection;
+package edu.avans.tjedrowald.foodmap.sync.connection;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.avans.tjedrowald.foodmap.connection.interceptors.ApiKeyInterceptor;
-import edu.avans.tjedrowald.foodmap.exception.ErrorHandlingInterceptor;
+import edu.avans.tjedrowald.foodmap.sync.connection.interceptors.ApiKeyInterceptor;
+import edu.avans.tjedrowald.foodmap.sync.exception.ErrorHandlingInterceptor;
 import edu.avans.tjedrowald.foodmap.models.ApiKey;
 
 import java.io.IOException;

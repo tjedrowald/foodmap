@@ -1,4 +1,4 @@
-package edu.avans.tjedrowald.foodmap.exception.exceptions;
+package edu.avans.tjedrowald.foodmap.sync.exception.exceptions;
 
 import java.io.IOException;
 

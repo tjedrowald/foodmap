@@ -1,4 +1,4 @@
-package edu.avans.tjedrowald.foodmap.connection.interceptors;
+package edu.avans.tjedrowald.foodmap.sync.connection.interceptors;
 
 import edu.avans.tjedrowald.foodmap.models.ApiKey;
 
