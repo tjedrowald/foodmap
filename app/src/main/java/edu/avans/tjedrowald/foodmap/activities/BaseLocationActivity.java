@@ -24,7 +24,7 @@ import edu.avans.tjedrowald.foodmap.R;
  * Created by tjedrowald on 6-3-18.
  */
 
-public abstract class BaseLocationActivity extends BaseActivity implements OnCompleteListener<Location> {
+public abstract class BaseLocationActivity extends BaseMenuActivity implements OnCompleteListener<Location> {
 
     private static final String TAG = BaseLocationActivity.class.getSimpleName();
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;

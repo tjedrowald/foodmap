@@ -1,5 +1,7 @@
 package edu.avans.tjedrowald.foodmap.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,17 +11,16 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.google.android.gms.tasks.Task;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import edu.avans.tjedrowald.foodmap.R;
 import edu.avans.tjedrowald.foodmap.adapters.YelpSearchAdapter;
+import edu.avans.tjedrowald.foodmap.interfaces.YelpSearchAdapterOnClickHandler;
 import edu.avans.tjedrowald.foodmap.models.SearchResponse;
 import retrofit2.Call;
 
@@ -27,7 +28,7 @@ import retrofit2.Call;
  * Created by tjedrowald on 1-3-18.
  */
 
-public class SearchActivity extends BaseLocationActivity {
+public class SearchActivity extends BaseLocationActivity implements YelpSearchAdapterOnClickHandler {
 
     private static final String TAG = SearchActivity.class.getSimpleName();
 
@@ -39,7 +40,7 @@ public class SearchActivity extends BaseLocationActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        yelpAdapter = new YelpSearchAdapter();
+        yelpAdapter = new YelpSearchAdapter(this);
 
         recyclerView = findViewById(R.id.recyclerview_search_result);
         recyclerView.setHasFixedSize(true);
@@ -84,7 +85,7 @@ public class SearchActivity extends BaseLocationActivity {
 
     private void loadSearchResult() {
         showSearchResult();
-        new YelpQueryTask().execute("Dordrecht"); // hmm, fetch user input
+        new YelpQueryTask().execute(); // hmm, fetch user search input?
     }
 
     private void showSearchResult() {
@@ -100,6 +101,17 @@ public class SearchActivity extends BaseLocationActivity {
                     loadSearchResult();
                 }
             });
+    }
+
+    @Override
+    public void onClick(String Id, String BusinessName, String BusinessImage) {
+        Context context = this;
+        Class destinationClass = SearchDetailActivity.class;
+        Intent intent = new Intent(context, destinationClass);
+        intent.putExtra("businessId", Id);
+        intent.putExtra("businessName", BusinessName);
+        intent.putExtra("businessImage", BusinessImage);
+        startActivity(intent);
     }
 
     public class YelpQueryTask extends AsyncTask<String, Void, SearchResponse> {

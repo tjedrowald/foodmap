@@ -3,6 +3,9 @@ package edu.avans.tjedrowald.foodmap.models;
 import com.fasterxml.jackson.annotation.JsonGetter;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Open implements Serializable {
     @JsonGetter("is_overnight")
@@ -40,4 +43,18 @@ public class Open implements Serializable {
         this.day = day;
     }
     int day;
+
+    public static String getHoursString(Open open){
+        SimpleDateFormat originalFormat = new SimpleDateFormat("HHmm");
+        SimpleDateFormat desiredFormat = new SimpleDateFormat("HH:mm");
+
+        try {
+            Date startTime = originalFormat.parse(open.getStart());
+            Date endTime = originalFormat.parse(open.getEnd());
+            return desiredFormat.format(startTime) + " - " + desiredFormat.format(endTime);
+        }
+        catch (ParseException e) {
+            return open.getStart() + " - " + open.getEnd();
+        }
+    }
 }

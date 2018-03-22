@@ -1,9 +1,13 @@
 package edu.avans.tjedrowald.foodmap.models;
 
+import android.content.res.Resources;
+
 import com.fasterxml.jackson.annotation.JsonGetter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+
+import edu.avans.tjedrowald.foodmap.R;
 
 public class Business implements Serializable
 {
@@ -169,4 +173,12 @@ public class Business implements Serializable
         this.photos = photos;
     }
     ArrayList<String> photos;
+
+    public String getCategoriesString(){
+        String catString = "";
+        for(Category cat : categories){
+            catString = catString + (catString != "" ? ", " : "") + cat.getTitle();
+        }
+        return catString;
+    }
 }

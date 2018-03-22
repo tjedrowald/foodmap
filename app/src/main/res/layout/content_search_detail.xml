@@ -2,16 +2,288 @@
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nested_scrollview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:visibility="visible"
+    android:fillViewport="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="edu.avans.tjedrowald.foodmap.activities.SearchDetailActivity"
     tools:showIn="@layout/activity_search_detail">
 
-    <TextView
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:text="@string/large_text" />
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp"
+            android:paddingTop="8dp">
+
+            <!-- icon -->
+            <ImageView
+                android:id="@+id/phone_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginTop="8dp"
+                app:srcCompat="@drawable/ic_phone_black_24dp" />
+
+            <!-- title -->
+            <TextView
+                android:id="@+id/phone_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/phone_icon"
+                android:layout_toEndOf="@+id/phone_icon"
+                android:layout_toRightOf="@+id/phone_icon"
+                android:textSize="18sp"
+                tools:text="Phone Number" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp" >
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="#dadada"
+                android:id="@+id/view" />
+
+            <!-- icon -->
+            <ImageView
+                android:id="@+id/hours_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginTop="8dp"
+                app:srcCompat="@drawable/ic_access_time_black_24dp" />
+
+            <!-- title -->
+            <TextView
+                android:id="@+id/hours_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:layout_alignBottom="@+id/hours_icon"
+                android:layout_toEndOf="@+id/hours_icon"
+                android:layout_toRightOf="@+id/hours_icon"
+                android:textSize="18sp"
+                tools:text="Open/Closed" />
+
+            <TextView
+                android:id="@+id/sunday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/hours_title"
+                android:layout_alignStart="@+id/hours_title"
+                android:layout_below="@+id/hours_title"
+                android:text="@string/sunday" />
+
+            <TextView
+                android:id="@+id/sunday_hours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/view"
+                android:layout_alignRight="@+id/view"
+                android:layout_below="@+id/hours_title"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:text="@string/closed" />
+
+            <TextView
+                android:id="@+id/monday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/sunday"
+                android:layout_alignStart="@+id/sunday"
+                android:layout_below="@+id/sunday"
+                android:text="@string/monday" />
+
+            <TextView
+                android:id="@+id/monday_hours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/view"
+                android:layout_alignRight="@+id/view"
+                android:layout_below="@+id/sunday_hours"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:text="@string/closed" />
+
+            <TextView
+                android:id="@+id/tuesday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/monday"
+                android:layout_alignStart="@+id/monday"
+                android:layout_below="@+id/monday"
+                android:text="@string/tuesday" />
+
+            <TextView
+                android:id="@+id/tuesday_hours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/view"
+                android:layout_alignRight="@+id/view"
+                android:layout_below="@+id/monday_hours"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:text="@string/closed" />
+
+            <TextView
+                android:id="@+id/wednesday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/tuesday"
+                android:layout_alignStart="@+id/tuesday"
+                android:layout_below="@+id/tuesday"
+                android:text="@string/wednesday" />
+
+            <TextView
+                android:id="@+id/wednesday_hours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/view"
+                android:layout_alignRight="@+id/view"
+                android:layout_below="@+id/tuesday_hours"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:text="@string/closed" />
+
+            <TextView
+                android:id="@+id/thursday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/wednesday"
+                android:layout_alignStart="@+id/wednesday"
+                android:layout_below="@+id/wednesday"
+                android:text="@string/thursday" />
+
+            <TextView
+                android:id="@+id/thursday_hours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/view"
+                android:layout_alignRight="@+id/view"
+                android:layout_below="@+id/wednesday_hours"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:text="@string/closed" />
+
+            <TextView
+                android:id="@+id/friday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/thursday"
+                android:layout_alignStart="@+id/thursday"
+                android:layout_below="@+id/thursday"
+                android:text="@string/friday" />
+
+            <TextView
+                android:id="@+id/friday_hours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/view"
+                android:layout_alignRight="@+id/view"
+                android:layout_below="@+id/thursday"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:text="@string/closed" />
+
+            <TextView
+                android:id="@+id/saturday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/friday"
+                android:layout_alignStart="@+id/friday"
+                android:layout_below="@+id/friday"
+                android:text="@string/saturday" />
+
+            <TextView
+                android:id="@+id/saturday_hours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/view"
+                android:layout_alignRight="@+id/view"
+                android:layout_below="@+id/friday_hours"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:text="@string/closed" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp" >
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="#dadada" />
+
+            <!-- icon -->
+            <ImageView
+                android:id="@+id/address_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginTop="8dp"
+                app:srcCompat="@drawable/ic_location_on_black_24dp" />
+
+            <!-- title -->
+            <TextView
+                android:id="@+id/address_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/address_icon"
+                android:layout_toEndOf="@+id/address_icon"
+                android:layout_toRightOf="@+id/address_icon"
+                android:textSize="18sp"
+                tools:text="Address_1" />
+
+
+            <TextView
+                android:id="@+id/zip_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/address_1"
+                android:layout_alignStart="@+id/address_1"
+                android:layout_below="@+id/address_1"
+                android:textSize="18sp"
+                tools:text="Zip Code" />
+
+            <TextView
+                android:id="@+id/city"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/address_1"
+                android:layout_marginLeft="17dp"
+                android:layout_marginStart="17dp"
+                android:layout_toEndOf="@+id/zip_code"
+                android:layout_toRightOf="@+id/zip_code"
+                android:textSize="18sp"
+                tools:text="City" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

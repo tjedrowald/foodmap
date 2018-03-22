@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">FoodMap</string>
+    <string name="title_search">Zoeken</string>
+    <string name="title_map">Kaart</string>
+    <string name="title_favorites">Favorieten</string>
+    <string name="settings">Instellingen</string>
+    <string name="action_settings">Instellingen</string>
+    <string name="search_hint">Zoek restaurants</string>
+    <string name="error_message">Oeps, er ging iets mis</string>
+
+    <string name="open">Open</string>
+    <string name="closed">Gesloten</string>
+
+    <string name="sunday">Zondag</string>
+    <string name="monday">Maandag</string>
+    <string name="tuesday">Dinsdag</string>
+    <string name="wednesday">Woensdag</string>
+    <string name="thursday">Donderdag</string>
+    <string name="friday">Vrijdag</string>
+    <string name="saturday">Zaterdag</string>
+
+
+    <string name="no_location_detected">
+        Geen locatie gedecteerd. Zorg ervoor dat locatie is ingeschakeld
+    </string>
+    <string name="permission_rationale">
+        Locatie toegang is nodig voor de basis functionaliteit van de app
+    </string>
+    <string name="permission_denied_explanation">
+        Toegang is gewijgerd, maar nodig voor de basis functionaliteit van de app
+    </string>
+
+</resources>

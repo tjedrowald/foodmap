@@ -6,7 +6,7 @@ import edu.avans.tjedrowald.foodmap.R;
  * Created by tjedrowald on 1-3-18.
  */
 
-public class FavoritesActivity extends BaseActivity {
+public class FavoritesActivity extends BaseMenuActivity {
     @Override
     int getContentViewId() {
         return R.layout.activity_favorites;
