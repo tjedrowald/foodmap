@@ -1,6 +1,9 @@
 package edu.avans.tjedrowald.foodmap.activities;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,8 +16,17 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ser.Serializers;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.IOException;
@@ -23,6 +35,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.avans.tjedrowald.foodmap.R;
+import edu.avans.tjedrowald.foodmap.data.FavoritesContract;
+import edu.avans.tjedrowald.foodmap.data.FavoritesDbHelper;
 import edu.avans.tjedrowald.foodmap.models.Business;
 import edu.avans.tjedrowald.foodmap.models.Hour;
 import edu.avans.tjedrowald.foodmap.models.Open;
@@ -39,6 +53,7 @@ public class SearchDetailActivity extends BaseYelpActivity {
     private NestedScrollView nestedScrollView;
     private ProgressBar queryProgressBar;
     private ImageView backgroundImage;
+    private FloatingActionButton fab;
     private TextView businessHoursTv;
     private TextView businessHoursMondayTv;
     private TextView businessHoursTuesdayTv;
@@ -53,6 +68,11 @@ public class SearchDetailActivity extends BaseYelpActivity {
     private TextView businessCityTv;
 
     private String businessId;
+
+    MapView mMapView;
+    private GoogleMap googleMap;
+
+    private SQLiteDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +95,14 @@ public class SearchDetailActivity extends BaseYelpActivity {
         businessAddress1Tv = (TextView) findViewById(R.id.address_1);
         businessZipCodeTv = (TextView) findViewById(R.id.zip_code);
         businessCityTv = (TextView) findViewById(R.id.city);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         nestedScrollView.setVisibility(View.INVISIBLE);
+
+        try {
+            MapsInitializer.initialize(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // init toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -84,20 +111,17 @@ public class SearchDetailActivity extends BaseYelpActivity {
             businessId = intent.getStringExtra("businessId");
             toolbar.setTitle(intent.getStringExtra("businessName"));
             ImageLoader.getInstance().displayImage(intent.getStringExtra("businessImage"), backgroundImage);
+
+            // load more business info from API
+            loadSearchResult();
         }
         setSupportActionBar(toolbar);
 
+        // Create a database helper
+        FavoritesDbHelper dbHelper = new FavoritesDbHelper(this);
+        // Get writable database
+        database = dbHelper.getWritableDatabase();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        loadSearchResult();
     }
 
     private void loadSearchResult() {
@@ -105,11 +129,30 @@ public class SearchDetailActivity extends BaseYelpActivity {
     }
 
     private void showSearchResult(final Business business) {
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int duration = Toast.LENGTH_LONG;
+
+                if (removeFavorite(business)) {
+                    Toast toast = Toast.makeText(getApplicationContext(), "Removed '" + business.getName() + "' from your favorites", duration);
+                    toast.show();
+                } else if (addFavorite(business)) {
+                    Toast toast = Toast.makeText(getApplicationContext(), "Added '" + business.getName() + "' to your favorites", duration);
+                    toast.show();
+                }
+            }
+        });
+
         businessPhoneTv.setText(business.getPhone());
         businessPhoneTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialPhoneNumber(business.getPhone());
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:" + business.getPhone()));
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                }
             }
         });
 
@@ -146,16 +189,6 @@ public class SearchDetailActivity extends BaseYelpActivity {
         businessCityTv.setText(business.getLocation().getCity());
     }
 
-    public void dialPhoneNumber(String phoneNumber) {
-        Intent intent = new Intent(Intent.ACTION_DIAL);
-        intent.setData(Uri.parse("tel:" + phoneNumber));
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        }
-    }
-
-
-
     private void showErrorMessage() {
         showSnackbar(R.string.error_message, android.R.string.ok,
             new View.OnClickListener() {
@@ -164,6 +197,27 @@ public class SearchDetailActivity extends BaseYelpActivity {
                     loadSearchResult();
                 }
             });
+    }
+
+    private boolean addFavorite(Business business) {
+        ContentValues values = new ContentValues();
+        // add values to record keys
+        values.put(FavoritesContract.FavoritesEntry.COLUMN_YELP_ID, business.getId());
+        values.put(FavoritesContract.FavoritesEntry.COLUMN_BUSINESS, business.getName());
+        values.put(FavoritesContract.FavoritesEntry.COLUMN_IMAGE_URL, business.getImageUrl());
+        return database.insert(FavoritesContract.FavoritesEntry.TABLE_NAME, null, values) > 0;
+    }
+    private boolean removeFavorite(Business business) {
+        return database.delete(FavoritesContract.FavoritesEntry.TABLE_NAME,
+                FavoritesContract.FavoritesEntry.COLUMN_YELP_ID + " = '" + business.getId() + "'",
+                null) > 0;
+    }
+    private boolean checkFavorite(Business business) {
+        Cursor mCursor = database.rawQuery(
+                "SELECT * FROM " + FavoritesContract.FavoritesEntry.TABLE_NAME +
+                        " WHERE " + FavoritesContract.FavoritesEntry.COLUMN_YELP_ID + " = '" + business.getId() + "'"
+                , null);
+        return mCursor.moveToFirst();
     }
 
     public class YelpQueryTask extends AsyncTask<String, Void, Business> {
