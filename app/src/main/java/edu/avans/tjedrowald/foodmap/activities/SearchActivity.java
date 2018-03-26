@@ -10,7 +10,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.Task;
 
@@ -19,8 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.avans.tjedrowald.foodmap.R;
-import edu.avans.tjedrowald.foodmap.adapters.YelpSearchAdapter;
-import edu.avans.tjedrowald.foodmap.interfaces.YelpSearchAdapterOnClickHandler;
+import edu.avans.tjedrowald.foodmap.adapters.YelpBusinessAdapter;
+import edu.avans.tjedrowald.foodmap.interfaces.YelpBusinessAdapterOnClickHandler;
 import edu.avans.tjedrowald.foodmap.models.SearchResponse;
 import retrofit2.Call;
 
@@ -28,20 +30,24 @@ import retrofit2.Call;
  * Created by tjedrowald on 1-3-18.
  */
 
-public class SearchActivity extends BaseLocationActivity implements YelpSearchAdapterOnClickHandler {
+public class SearchActivity extends BaseLocationActivity implements YelpBusinessAdapterOnClickHandler {
 
     private static final String TAG = SearchActivity.class.getSimpleName();
 
+    private TextView noResultsTv;
+    private ImageView noResultsImg;
     private RecyclerView recyclerView;
     private ProgressBar loadingIndicator;
-    private YelpSearchAdapter yelpAdapter;
+    private YelpBusinessAdapter yelpAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        yelpAdapter = new YelpSearchAdapter(this);
+        yelpAdapter = new YelpBusinessAdapter(this);
 
+        noResultsTv = findViewById(R.id.no_results_text);
+        noResultsImg = findViewById(R.id.no_results);
         recyclerView = findViewById(R.id.recyclerview_search_result);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(yelpAdapter);
@@ -84,16 +90,19 @@ public class SearchActivity extends BaseLocationActivity implements YelpSearchAd
     }
 
     private void loadSearchResult() {
-        showSearchResult();
-        new YelpQueryTask().execute(); // hmm, fetch user search input?
+        new YelpQueryTask().execute(); // hmm, fetch user search input in the future?
     }
 
     private void showSearchResult() {
         recyclerView.setVisibility(View.VISIBLE);
+        noResultsImg.setVisibility(View.INVISIBLE);
+        noResultsTv.setVisibility(View.INVISIBLE);
     }
 
     private void showErrorMessage() {
         recyclerView.setVisibility(View.INVISIBLE);
+        noResultsImg.setVisibility(View.VISIBLE);
+        noResultsTv.setVisibility(View.VISIBLE);
         showSnackbar(R.string.error_message, android.R.string.ok,
             new View.OnClickListener() {
                 @Override
@@ -151,7 +160,7 @@ public class SearchActivity extends BaseLocationActivity implements YelpSearchAd
             loadingIndicator.setVisibility(View.INVISIBLE);
             if (response != null) {
                 showSearchResult();
-                yelpAdapter.setSearchResult(response);
+                yelpAdapter.setSearchResult(response.getBusinesses());
             }
             else {
                 showErrorMessage();

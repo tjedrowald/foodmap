@@ -49,6 +49,8 @@ public class SearchDetailActivity extends BaseYelpActivity {
 
     private static final String TAG = SearchDetailActivity.class.getSimpleName();
 
+    private SQLiteDatabase database;
+
     //GUI
     private NestedScrollView nestedScrollView;
     private ProgressBar queryProgressBar;
@@ -68,11 +70,6 @@ public class SearchDetailActivity extends BaseYelpActivity {
     private TextView businessCityTv;
 
     private String businessId;
-
-    MapView mMapView;
-    private GoogleMap googleMap;
-
-    private SQLiteDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,12 +94,6 @@ public class SearchDetailActivity extends BaseYelpActivity {
         businessCityTv = (TextView) findViewById(R.id.city);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         nestedScrollView.setVisibility(View.INVISIBLE);
-
-        try {
-            MapsInitializer.initialize(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         // init toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -135,10 +126,10 @@ public class SearchDetailActivity extends BaseYelpActivity {
                 int duration = Toast.LENGTH_LONG;
 
                 if (removeFavorite(business)) {
-                    Toast toast = Toast.makeText(getApplicationContext(), "Removed '" + business.getName() + "' from your favorites", duration);
+                    Toast toast = Toast.makeText(getApplicationContext(), String.format(getResources().getString(R.string.remove_from_favorites), business.getName()), duration);
                     toast.show();
                 } else if (addFavorite(business)) {
-                    Toast toast = Toast.makeText(getApplicationContext(), "Added '" + business.getName() + "' to your favorites", duration);
+                    Toast toast = Toast.makeText(getApplicationContext(), String.format(getResources().getString(R.string.add_to_favorites), business.getName()), duration);
                     toast.show();
                 }
             }
@@ -211,13 +202,6 @@ public class SearchDetailActivity extends BaseYelpActivity {
         return database.delete(FavoritesContract.FavoritesEntry.TABLE_NAME,
                 FavoritesContract.FavoritesEntry.COLUMN_YELP_ID + " = '" + business.getId() + "'",
                 null) > 0;
-    }
-    private boolean checkFavorite(Business business) {
-        Cursor mCursor = database.rawQuery(
-                "SELECT * FROM " + FavoritesContract.FavoritesEntry.TABLE_NAME +
-                        " WHERE " + FavoritesContract.FavoritesEntry.COLUMN_YELP_ID + " = '" + business.getId() + "'"
-                , null);
-        return mCursor.moveToFirst();
     }
 
     public class YelpQueryTask extends AsyncTask<String, Void, Business> {

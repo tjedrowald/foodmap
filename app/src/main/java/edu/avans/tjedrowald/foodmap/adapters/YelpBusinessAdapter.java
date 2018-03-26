@@ -13,23 +13,22 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
 
 import edu.avans.tjedrowald.foodmap.R;
-import edu.avans.tjedrowald.foodmap.interfaces.YelpSearchAdapterOnClickHandler;
+import edu.avans.tjedrowald.foodmap.interfaces.YelpBusinessAdapterOnClickHandler;
 import edu.avans.tjedrowald.foodmap.models.Business;
-import edu.avans.tjedrowald.foodmap.models.Category;
 import edu.avans.tjedrowald.foodmap.models.SearchResponse;
 
 /**
  * Created by tjedrowald on 2-3-18.
  */
 
-public class YelpSearchAdapter extends RecyclerView.Adapter<YelpSearchAdapter.YelpSearchAdapterViewHolder>{
+public class YelpBusinessAdapter extends RecyclerView.Adapter<YelpBusinessAdapter.YelpSearchAdapterViewHolder>{
 
-    private SearchResponse searchResult;
+    private ArrayList<Business> searchResult;
     private Context context;
-    private YelpSearchAdapterOnClickHandler mClickHandler;
+    private YelpBusinessAdapterOnClickHandler mClickHandler;
 
 
-    public YelpSearchAdapter(YelpSearchAdapterOnClickHandler clickHandler){
+    public YelpBusinessAdapter(YelpBusinessAdapterOnClickHandler clickHandler){
         mClickHandler = clickHandler;
     }
 
@@ -66,11 +65,14 @@ public class YelpSearchAdapter extends RecyclerView.Adapter<YelpSearchAdapter.Ye
      */
     @Override
     public void onBindViewHolder(YelpSearchAdapterViewHolder holder, int position) {
-        Business business = searchResult.getBusinesses().get(position);
+        Business business = searchResult.get(position);
+
         holder.mSearchItemTitle.setText(business.getName());
-        holder.mSearchItemCategories.setText((business.getCategoriesString()));
-        holder.mSearchItemState .setText((business.getIsClosed() ? R.string.closed : R.string.open));
         ImageLoader.getInstance().displayImage(business.getImageUrl(), holder.mSearchItemIcon);
+        if (business.getCategories() != null) {
+            holder.mSearchItemCategories.setText((business.getCategoriesString()));
+            holder.mSearchItemState .setText((business.getIsClosed() ? R.string.closed : R.string.open));
+        }
     }
 
     /**
@@ -82,7 +84,7 @@ public class YelpSearchAdapter extends RecyclerView.Adapter<YelpSearchAdapter.Ye
     @Override
     public int getItemCount() {
         if (null == searchResult) return 0;
-        return searchResult.getBusinesses().size();
+        return searchResult.size();
     }
 
 
@@ -93,7 +95,6 @@ public class YelpSearchAdapter extends RecyclerView.Adapter<YelpSearchAdapter.Ye
 
         public final ImageView mSearchItemIcon;
         public final TextView mSearchItemTitle;
-        public final ImageView mSearchItemRating;
         public final TextView mSearchItemCategories;
         public final TextView mSearchItemState;
 
@@ -101,7 +102,6 @@ public class YelpSearchAdapter extends RecyclerView.Adapter<YelpSearchAdapter.Ye
             super(view);
             mSearchItemIcon = (ImageView) view.findViewById(R.id.res_icon);
             mSearchItemTitle = (TextView) view.findViewById(R.id.res_title);
-            mSearchItemRating = (ImageView) view.findViewById(R.id.res_rating);
             mSearchItemCategories = (TextView) view.findViewById(R.id.res_categories);
             mSearchItemState = (TextView) view.findViewById(R.id.res_state);
 
@@ -111,12 +111,12 @@ public class YelpSearchAdapter extends RecyclerView.Adapter<YelpSearchAdapter.Ye
         @Override
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
-            Business business = searchResult.getBusinesses().get(adapterPosition);
+            Business business = searchResult.get(adapterPosition);
             mClickHandler.onClick(business.getId(), business.getName(), business.getImageUrl());
         }
     }
 
-    public void setSearchResult(SearchResponse response) {
+    public void setSearchResult(ArrayList<Business> response) {
         searchResult = response;
         notifyDataSetChanged();
     }

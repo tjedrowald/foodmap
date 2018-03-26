@@ -29,4 +29,9 @@
     <string name="permission_denied_explanation">
         Permission was denied, but is needed for core functionality.
     </string>
+
+    <string name="add_to_favorites">Added \'%1$s\' to your favorites</string>
+    <string name="remove_from_favorites">Removed \'%1$s\' from your favorites</string>
+    <string name="no_favorites">No favorites found</string>
+    <string name="no_results">No search results found</string>
 </resources>
