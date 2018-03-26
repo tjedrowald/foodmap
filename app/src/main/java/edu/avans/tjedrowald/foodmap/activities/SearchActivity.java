@@ -17,20 +17,23 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.Task;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import edu.avans.tjedrowald.foodmap.R;
 import edu.avans.tjedrowald.foodmap.adapters.YelpBusinessAdapter;
 import edu.avans.tjedrowald.foodmap.interfaces.YelpBusinessAdapterOnClickHandler;
+import edu.avans.tjedrowald.foodmap.interfaces.YelpQueryCallback;
 import edu.avans.tjedrowald.foodmap.models.SearchResponse;
+import edu.avans.tjedrowald.foodmap.sync.YelpQueryTask;
 import retrofit2.Call;
 
 /**
  * Created by tjedrowald on 1-3-18.
  */
 
-public class SearchActivity extends BaseLocationActivity implements YelpBusinessAdapterOnClickHandler {
+public class SearchActivity extends BaseLocationActivity implements YelpBusinessAdapterOnClickHandler, YelpQueryCallback {
 
     private static final String TAG = SearchActivity.class.getSimpleName();
 
@@ -48,26 +51,15 @@ public class SearchActivity extends BaseLocationActivity implements YelpBusiness
 
         noResultsTv = findViewById(R.id.no_results_text);
         noResultsImg = findViewById(R.id.no_results);
+        loadingIndicator = findViewById(R.id.pb_loading_indicator);
+
         recyclerView = findViewById(R.id.recyclerview_search_result);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(yelpAdapter);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
-
-        loadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
     }
-
-    @Override
-    int getContentViewId() {
-        return R.layout.activity_search;
-    }
-
-    @Override
-    int getNavigationMenuItemId() {
-        return R.id.navigation_search;
-    }
-
 
     // This method is called when the last location is fetched.
     @Override
@@ -90,7 +82,7 @@ public class SearchActivity extends BaseLocationActivity implements YelpBusiness
     }
 
     private void loadSearchResult() {
-        new YelpQueryTask().execute(); // hmm, fetch user search input in the future?
+        new YelpQueryTask(yelpAPI, this).execute(mLastLocation);
     }
 
     private void showSearchResult() {
@@ -123,48 +115,32 @@ public class SearchActivity extends BaseLocationActivity implements YelpBusiness
         startActivity(intent);
     }
 
-    public class YelpQueryTask extends AsyncTask<String, Void, SearchResponse> {
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            loadingIndicator.setVisibility(View.VISIBLE);
+    @Override
+    public void onPreExecute() {
+        loadingIndicator.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onPostExecute(SearchResponse searchResponse) {
+        loadingIndicator.setVisibility(View.INVISIBLE);
+
+        if (searchResponse != null) {
+            showSearchResult();
+            yelpAdapter.setSearchResult(searchResponse.getBusinesses());
         }
-
-        @Override
-        protected SearchResponse doInBackground(String... params) {
-
-            /* If there's no location, there's nothing to look up. */
-            if (mLastLocation == null) {
-                return null;
-            }
-
-            try {
-                Map<String, String> queryParams = new HashMap<>();
-                queryParams.put("latitude", Double.toString(mLastLocation.getLatitude()));
-                queryParams.put("longitude", Double.toString(mLastLocation.getLongitude()));
-                queryParams.put("term", "food");
-                queryParams.put("lang", "nl"); // hmm, this should not be hard coded.
-                Call<SearchResponse> call = yelpAPI.getBusinessSearch(queryParams);
-                SearchResponse response = call.execute().body();
-                return response;
-            } catch (IOException e) {
-                Log.d(TAG, "IOException "+e);
-                e.printStackTrace();
-                return null;
-            }
+        else {
+            showErrorMessage();
         }
+    }
 
-        @Override
-        protected void onPostExecute(SearchResponse response) {
-            loadingIndicator.setVisibility(View.INVISIBLE);
-            if (response != null) {
-                showSearchResult();
-                yelpAdapter.setSearchResult(response.getBusinesses());
-            }
-            else {
-                showErrorMessage();
-            }
-        }
+    @Override
+    int getContentViewId() {
+        return R.layout.activity_search;
+    }
+
+    @Override
+    int getNavigationMenuItemId() {
+        return R.id.navigation_search;
     }
 }
