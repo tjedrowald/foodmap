@@ -40,7 +40,10 @@ Classes are devided into the following packages:
 The app uses SQLite to enable Local Storage functionality. Favorite restaurants are stored within an local database on the user's device. 
 
 ## Screenshots
-
+![Screenshot 1](/screenshots/Screenshot_1_nexus5x-portrait.png  "Screenshot 1")
+![Screenshot 2](/screenshots/Screenshot_2_nexus5x-portrait.png  "Screenshot 2")
+![Screenshot 3](/screenshots/Screenshot_3_nexus5x-portrait.png  "Screenshot 3")
+![Screenshot 4](/screenshots/Screenshot_4_nexus5x-portrait.png  "Screenshot 4")
 
 ## Build configuration
 Note: to build the app you need the a 'secrets.xml' containing the API-keys (inside the res/values/ folder).
