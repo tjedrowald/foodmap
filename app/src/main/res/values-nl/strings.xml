@@ -34,5 +34,5 @@
     <string name="add_to_favorites">%1$s is toegevoegd aan je favorieten</string>
     <string name="remove_from_favorites">%1$s is verwijderd van je favorieten</string>
     <string name="no_favorites">Geen favorieten gevonden</string>
-    <string name="no_results">Geen resulaten gevonden</string>
+    <string name="no_results">(Nog) geen resulaten gevonden</string>
 </resources>
