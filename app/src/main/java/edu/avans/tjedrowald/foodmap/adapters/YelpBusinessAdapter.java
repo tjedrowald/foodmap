@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import edu.avans.tjedrowald.foodmap.R;
 import edu.avans.tjedrowald.foodmap.interfaces.YelpBusinessAdapterOnClickHandler;
 import edu.avans.tjedrowald.foodmap.models.Business;
-import edu.avans.tjedrowald.foodmap.models.SearchResponse;
 
 /**
  * Created by tjedrowald on 2-3-18.

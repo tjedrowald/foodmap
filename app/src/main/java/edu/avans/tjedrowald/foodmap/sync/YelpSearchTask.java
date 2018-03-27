@@ -1,14 +1,15 @@
 package edu.avans.tjedrowald.foodmap.sync;
 
-import android.os.AsyncTask;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
-import edu.avans.tjedrowald.foodmap.interfaces.YelpQueryCallback;
+import edu.avans.tjedrowald.foodmap.interfaces.YelpSearchCallback;
 import edu.avans.tjedrowald.foodmap.models.SearchResponse;
 import edu.avans.tjedrowald.foodmap.sync.connection.YelpFusionApi;
 import retrofit2.Call;
@@ -17,14 +18,14 @@ import retrofit2.Call;
  * Created by tjedrowald on 26-3-18.
  */
 
-public class YelpQueryTask extends AsyncTask<Location, Void, SearchResponse> {
+public class YelpSearchTask extends AsyncTask<Location, Void, SearchResponse> {
 
-    private static final String TAG = YelpQueryTask.class.getSimpleName();
+    private static final String TAG = YelpSearchTask.class.getSimpleName();
 
     private YelpFusionApi yelpAPI;
-    private YelpQueryCallback callback;
+    private YelpSearchCallback callback;
 
-    public YelpQueryTask(YelpFusionApi yelpAPI, YelpQueryCallback callback) {
+    public YelpSearchTask(YelpFusionApi yelpAPI, YelpSearchCallback callback) {
         this.yelpAPI = yelpAPI;
         this.callback = callback;
     }
@@ -32,7 +33,7 @@ public class YelpQueryTask extends AsyncTask<Location, Void, SearchResponse> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        callback.onPreExecute();
+        callback.onPreExecuteYelpQuery();
     }
 
     @Override
@@ -49,7 +50,7 @@ public class YelpQueryTask extends AsyncTask<Location, Void, SearchResponse> {
             queryParams.put("latitude", Double.toString(lastLocation.getLatitude()));
             queryParams.put("longitude", Double.toString(lastLocation.getLongitude()));
             queryParams.put("term", "food");
-            queryParams.put("lang", "nl"); // hmm, this should not be hard coded.
+            queryParams.put("lang", Locale.getDefault().getLanguage()); // hmm, this should not be hard coded.
             Call<SearchResponse> call = yelpAPI.getBusinessSearch(queryParams);
             SearchResponse response = call.execute().body();
             return response;
@@ -62,6 +63,6 @@ public class YelpQueryTask extends AsyncTask<Location, Void, SearchResponse> {
 
     @Override
     protected void onPostExecute(SearchResponse response) {
-        callback.onPostExecute(response);
+        callback.onPostExecuteYelpQuery(response);
     }
 }

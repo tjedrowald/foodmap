@@ -1,13 +1,9 @@
 package edu.avans.tjedrowald.foodmap.models;
 
-import android.content.res.Resources;
-
 import com.fasterxml.jackson.annotation.JsonGetter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-
-import edu.avans.tjedrowald.foodmap.R;
 
 public class Business implements Serializable
 {

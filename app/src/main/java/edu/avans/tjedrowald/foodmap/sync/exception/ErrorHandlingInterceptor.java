@@ -2,11 +2,11 @@ package edu.avans.tjedrowald.foodmap.sync.exception;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.avans.tjedrowald.foodmap.sync.exception.exceptions.UnexpectedAPIError;
-import edu.avans.tjedrowald.foodmap.sync.exception.exceptions.YelpFusionError;
 
 import java.io.IOException;
 
+import edu.avans.tjedrowald.foodmap.sync.exception.exceptions.UnexpectedAPIError;
+import edu.avans.tjedrowald.foodmap.sync.exception.exceptions.YelpFusionError;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 

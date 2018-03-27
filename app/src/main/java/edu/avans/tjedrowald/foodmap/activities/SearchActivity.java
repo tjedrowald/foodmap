@@ -1,9 +1,7 @@
 package edu.avans.tjedrowald.foodmap.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,24 +14,18 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.Task;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import edu.avans.tjedrowald.foodmap.R;
 import edu.avans.tjedrowald.foodmap.adapters.YelpBusinessAdapter;
 import edu.avans.tjedrowald.foodmap.interfaces.YelpBusinessAdapterOnClickHandler;
-import edu.avans.tjedrowald.foodmap.interfaces.YelpQueryCallback;
+import edu.avans.tjedrowald.foodmap.interfaces.YelpSearchCallback;
 import edu.avans.tjedrowald.foodmap.models.SearchResponse;
-import edu.avans.tjedrowald.foodmap.sync.YelpQueryTask;
-import retrofit2.Call;
+import edu.avans.tjedrowald.foodmap.sync.YelpSearchTask;
 
 /**
  * Created by tjedrowald on 1-3-18.
  */
 
-public class SearchActivity extends BaseLocationActivity implements YelpBusinessAdapterOnClickHandler, YelpQueryCallback {
+public class SearchActivity extends BaseLocationActivity implements YelpBusinessAdapterOnClickHandler, YelpSearchCallback {
 
     private static final String TAG = SearchActivity.class.getSimpleName();
 
@@ -42,6 +34,29 @@ public class SearchActivity extends BaseLocationActivity implements YelpBusiness
     private RecyclerView recyclerView;
     private ProgressBar loadingIndicator;
     private YelpBusinessAdapter yelpAdapter;
+
+    private void loadSearchResult() {
+        new YelpSearchTask(yelpAPI, this).execute(mLastLocation);
+    }
+
+    private void showSearchResult() {
+        recyclerView.setVisibility(View.VISIBLE);
+        noResultsImg.setVisibility(View.INVISIBLE);
+        noResultsTv.setVisibility(View.INVISIBLE);
+    }
+
+    private void showErrorMessage() {
+        recyclerView.setVisibility(View.INVISIBLE);
+        noResultsImg.setVisibility(View.VISIBLE);
+        noResultsTv.setVisibility(View.VISIBLE);
+        showSnackbar(R.string.error_message, android.R.string.ok,
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        loadSearchResult();
+                    }
+                });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +76,7 @@ public class SearchActivity extends BaseLocationActivity implements YelpBusiness
         recyclerView.setLayoutManager(layoutManager);
     }
 
-    // This method is called when the last location is fetched.
+    // callback when the last location is fetched.
     @Override
     public void onComplete(@NonNull Task<Location> task) {
         if (task.isSuccessful() && task.getResult() != null) {
@@ -71,58 +86,35 @@ public class SearchActivity extends BaseLocationActivity implements YelpBusiness
         } else {
             Log.w(TAG, "getLastLocation:exception", task.getException());
             showSnackbar(R.string.no_location_detected, android.R.string.ok,
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        // try again
-                        getLastLocation();
-                    }
-                });
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // try again
+                            getLastLocation();
+                        }
+                    });
         }
     }
 
-    private void loadSearchResult() {
-        new YelpQueryTask(yelpAPI, this).execute(mLastLocation);
-    }
-
-    private void showSearchResult() {
-        recyclerView.setVisibility(View.VISIBLE);
-        noResultsImg.setVisibility(View.INVISIBLE);
-        noResultsTv.setVisibility(View.INVISIBLE);
-    }
-
-    private void showErrorMessage() {
-        recyclerView.setVisibility(View.INVISIBLE);
-        noResultsImg.setVisibility(View.VISIBLE);
-        noResultsTv.setVisibility(View.VISIBLE);
-        showSnackbar(R.string.error_message, android.R.string.ok,
-            new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    loadSearchResult();
-                }
-            });
-    }
-
+    // callback when search item is clicked
     @Override
     public void onClick(String Id, String BusinessName, String BusinessImage) {
-        Context context = this;
-        Class destinationClass = SearchDetailActivity.class;
-        Intent intent = new Intent(context, destinationClass);
+        Intent intent = new Intent(this, SearchDetailActivity.class);
         intent.putExtra("businessId", Id);
         intent.putExtra("businessName", BusinessName);
         intent.putExtra("businessImage", BusinessImage);
         startActivity(intent);
     }
 
-
+    // callback before executing YelpSearchTask
     @Override
-    public void onPreExecute() {
+    public void onPreExecuteYelpQuery() {
         loadingIndicator.setVisibility(View.VISIBLE);
     }
 
+    // callback after executing YelpSearchTask
     @Override
-    public void onPostExecute(SearchResponse searchResponse) {
+    public void onPostExecuteYelpQuery(SearchResponse searchResponse) {
         loadingIndicator.setVisibility(View.INVISIBLE);
 
         if (searchResponse != null) {

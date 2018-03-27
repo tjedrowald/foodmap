@@ -1,9 +1,8 @@
 package edu.avans.tjedrowald.foodmap.sync.connection.interceptors;
 
-import edu.avans.tjedrowald.foodmap.models.ApiKey;
-
 import java.io.IOException;
 
+import edu.avans.tjedrowald.foodmap.models.ApiKey;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;

@@ -1,12 +1,11 @@
 package edu.avans.tjedrowald.foodmap.sync.connection;
 
+import java.util.Map;
+
 import edu.avans.tjedrowald.foodmap.models.AutoComplete;
 import edu.avans.tjedrowald.foodmap.models.Business;
 import edu.avans.tjedrowald.foodmap.models.Reviews;
 import edu.avans.tjedrowald.foodmap.models.SearchResponse;
-
-import java.util.Map;
-
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
