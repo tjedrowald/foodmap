@@ -1,23 +1,27 @@
-package edu.avans.tjedrowald.foodmap;
+package edu.avans.tjedrowald.foodmap.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public abstract class BaseActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+import edu.avans.tjedrowald.foodmap.R;
 
+/**
+ * Created by tjedrowald on 1-3-18.
+ */
+public abstract class BaseMenuActivity extends BaseYelpActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
     protected BottomNavigationView navigationView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getContentViewId());
 
-        navigationView = (BottomNavigationView) findViewById(R.id.navigation);
+        navigationView = findViewById(R.id.navigation);
         navigationView.setOnNavigationItemSelectedListener(this);
     }
 
@@ -41,7 +45,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BottomNa
                 startActivity(new Intent(this, SearchActivity.class));
                 return true;
             case R.id.navigation_map:
-                startActivity(new Intent(this, MapActivity.class));
+                startActivity(new Intent(this, MapsActivity.class));
                 return true;
             case R.id.navigation_favorites:
                 startActivity(new Intent(this, FavoritesActivity.class));
@@ -55,7 +59,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BottomNa
         selectBottomNavigationBarItem(actionId);
     }
 
-    void selectBottomNavigationBarItem(int itemId) {
+    protected void selectBottomNavigationBarItem(int itemId) {
         Menu menu = navigationView.getMenu();
         for (int i = 0, size = menu.size(); i < size; i++) {
             MenuItem item = menu.getItem(i);
