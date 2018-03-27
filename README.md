@@ -46,4 +46,4 @@ The app uses SQLite to enable Local Storage functionality. Favorite restaurants 
 ![Screenshot 4](/screenshots/Screenshot_4_nexus5x-portrait.png  "Screenshot 4")
 
 ## Build configuration
-Note: to build the app you need the a 'secrets.xml' containing the API-keys (inside the res/values/ folder).
+Note: to build the app you need a 'secrets.xml' containing the API-keys (inside the res/values/ folder).
